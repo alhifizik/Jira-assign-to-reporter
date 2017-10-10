@@ -74,30 +74,8 @@ function assignShortcut(){
   }
 }
 
-function contextMenu(issueKey, id){
-  console.log(id)
-  reporter = obtainReporter(issueKey)
+function contextmenu(){
 
-  li = $('<li>', {
-    class: 'aui-list-item'
-  }).insertAfter($('.aui-list-item-link.issueaction-assign-issue').parent())
-  link = $('<a>', {
-    class: 'aui-list-item-link issueaction-assign-to-reporter',
-    href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id +
-    '&assignee=' + reporter + '&returnUrl=' + $(location).attr('href') +
-    '&atl_token=' + token,
-
-    text: linkText
-  }).appendTo(li)
-
-  li.hover(
-    function() {
-      $(this).prop('class', 'aui-list-item active')
-      $(this).prev().prop('class', 'aui-list-item')
-      $(this).next().prop('class', 'aui-list-item')
-    }, function() {
-      $(this).prop('class', 'aui-list-item')
-    })
 }
 
 
@@ -108,22 +86,11 @@ if (browse > 0 || issues > 0 || selectedIssue > 0) {
   })
 
   var callback = function(mutations){
-    // assignDialog = document.getElementById('assign-dialog')
-    // linkOnDialog = document.querySelector('[data-mydata = "assign-to-reporter-trigger"]')
-    // if (!!assignDialog && !linkOnDialog) {
-    //   addElementOnDialog()
-    // }
     link = $('*[data-mydata="assign-to-reporter"]')
     if (link.length == 0 && !!$('[id^="issue_summary_reporter_"]')) {
       addElement()
     }
-    assignPopup = $('.aui-list-item-link.issueaction-assign-issue')
-    issueKey = assignPopup.attr('data-issuekey')
-    id = assignPopup.attr('data-issueid')
-    reporterPopup = $('.aui-list-item-link.issueaction-assign-to-reporter')
-    if (assignPopup.length == 1 && reporterPopup.length < 1) {
-      contextMenu(issueKey, id)
-    }
+
   }
 
   mo = new MutationObserver(callback)
