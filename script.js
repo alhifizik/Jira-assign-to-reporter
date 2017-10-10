@@ -31,40 +31,31 @@ function addElement() {
       class: 'issueaction-assign-to-me',
       text: linkText,
       title: titleText,
-      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id + '&assignee=' + reporter
+      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id +
+      '&assignee=' + reporter
     }).appendTo(span)
 
   }
 }
 
-// function addElementOnDialog(){
-//   issueKey = document.querySelector('[title = "assigneeEditIssueKey"]').value
-//   reporter = obtainReporter(issueKey)
-//   link = document.createElement("a")
-//   link.id = 'assign-to-me-trigger'
-//   link.dataset.mydata = 'assign-to-reporter-trigger'
-//   link.textContent = linkText + ' ()'
-//   document.getElementById('assignee-container').insertBefore(link, document.getElementById('assignee-container').querySelector('[class="hidden parameters"]'))
-//   link.addEventListener('click',function(){
-//     document.getElementById('assignee-field').value = reporter
-//   })
-// }
-
-function obtainReporter(issueKey) {
-  restUrl = $(location).attr('href').substring(0, $(location).attr('href').indexOf('browse'))
-  restUrl += 'rest/api/latest/issue/' + issueKey + '?fields=reporter'
+function obtainInfo(issueKey, type) {
+  restUrl = $(location).attr('href').substring(0,
+    $(location).attr('href').indexOf('browse'))
+  restUrl += 'rest/api/latest/issue/' + issueKey + '?fields=' + type
 
   var xmlHttp = new XMLHttpRequest()
   xmlHttp.onload = function() {
     response = xmlHttp.responseText
     obj = JSON.parse(response)
-    reporter = obj.fields.reporter.name
-    id = obj.id
+    if (type == 'reporter'){
+      reporter = obj.fields.reporter.name
+    } else if (type == 'assignee') {
+      assignee = obj.fields.assignee.name
+    }
   }
   xmlHttp.open( "GET", restUrl, true)
   xmlHttp.send()
-
-  return reporter
+  return [reporter, assignee]
 }
 
 function assignShortcut(){
@@ -75,7 +66,32 @@ function assignShortcut(){
 }
 
 function contextmenu(){
+  assignItemLink = $('.aui-list-item-link.issueaction-assign-issue')
+  issueKey = assignItemLink.attr('data-issuekey')
+  issueId = assignItemLink.attr('data-issueid')
+  reporter = obtainInfo(issueKey, 'reporter')[0]
+  assignee = obtainInfo(issueKey, 'assignee')[1]
 
+  if (reporter != assignee && reporter != currentUser) {
+    li = $('<li>', {
+      class: 'aui-list-item'
+    }).insertAfter($('.aui-list-item-link.issueaction-assign-issue').parent())
+    link = $('<a>', {
+      class: 'aui-list-item-link issueaction-assign-to-reporter',
+      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id +
+      '&assignee=' + reporter + '&returnUrl=' + $(location).attr('href') +
+      '&atl_token=' + token,
+      text: linkText
+    }).appendTo(li)
+
+    li.hover(function() {
+      $(this).prop('class', 'aui-list-item active')
+      $(this).prev().prop('class', 'aui-list-item')
+      $(this).next().prop('class', 'aui-list-item')
+    }, function() {
+      $(this).prop('class', 'aui-list-item')
+    })
+  }
 }
 
 
@@ -89,6 +105,13 @@ if (browse > 0 || issues > 0 || selectedIssue > 0) {
     link = $('*[data-mydata="assign-to-reporter"]')
     if (link.length == 0 && !!$('[id^="issue_summary_reporter_"]')) {
       addElement()
+    }
+    contextMenu = $('[role = "menu"]')
+    assignItemLink = $('.aui-list-item-link.issueaction-assign-issue')
+    reporterItemLink = $('.aui-list-item-link.issueaction-assign-to-reporter')
+    if (contextMenu.length == 1 && assignItemLink.length == 1 &&
+      reporterItemLink.length == 0) {
+      contextmenu()
     }
 
   }
