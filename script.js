@@ -37,19 +37,6 @@ function addElement() {
   }
 }
 
-// function addElementOnDialog(){
-//   issueKey = document.querySelector('[title = "assigneeEditIssueKey"]').value
-//   reporter = obtainReporter(issueKey)
-//   link = document.createElement("a")
-//   link.id = 'assign-to-me-trigger'
-//   link.dataset.mydata = 'assign-to-reporter-trigger'
-//   link.textContent = linkText + ' ()'
-//   document.getElementById('assignee-container').insertBefore(link, document.getElementById('assignee-container').querySelector('[class="hidden parameters"]'))
-//   link.addEventListener('click',function(){
-//     document.getElementById('assignee-field').value = reporter
-//   })
-// }
-
 function obtainReporter(issueKey) {
   restUrl = $(location).attr('href').substring(0, $(location).attr('href').indexOf('browse'))
   restUrl += 'rest/api/latest/issue/' + issueKey + '?fields=reporter'
@@ -108,11 +95,6 @@ if (browse > 0 || issues > 0 || selectedIssue > 0) {
   })
 
   var callback = function(mutations){
-    // assignDialog = document.getElementById('assign-dialog')
-    // linkOnDialog = document.querySelector('[data-mydata = "assign-to-reporter-trigger"]')
-    // if (!!assignDialog && !linkOnDialog) {
-    //   addElementOnDialog()
-    // }
     link = $('*[data-mydata="assign-to-reporter"]')
     if (link.length == 0 && !!$('[id^="issue_summary_reporter_"]')) {
       addElement()
