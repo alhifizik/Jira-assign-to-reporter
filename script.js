@@ -54,8 +54,19 @@ function obtainReporter(issueKey) {
   return reporter
 }
 
-if (browse > 0 || issues > 0 || selectedIssue > 0) {
+function assignShortcut(){
+  link = $('*[data-mydata="assign-to-reporter"]')
+  if (link.length > 0) {
+    $('*[data-mydata="assign-to-reporter"]').children("a")[0].click()
+  }
+}
 
+
+if (browse > 0 || issues > 0 || selectedIssue > 0) {
+  $(document).keypress(function(){
+    if(event.which == 114) {
+      assignShortcut()}
+  })
   var callback = function(mutations){
     link = $('*[data-mydata="assign-to-reporter"]')
     if (link.length == 0 && !!$('[id^="issue_summary_reporter_"]')) {
