@@ -65,7 +65,9 @@ function assignShortcut(){
 if (browse > 0 || issues > 0 || selectedIssue > 0) {
   $(document).keypress(function(){
     if(event.which == 114) {
-      assignShortcut()}
+      if($(event.target).prop("tagName") ==  'BODY'){
+        assignShortcut()}
+      }
   })
   var callback = function(mutations){
     link = $('*[data-mydata="assign-to-reporter"]')
