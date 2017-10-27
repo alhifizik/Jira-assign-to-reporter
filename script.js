@@ -100,6 +100,13 @@ if (browse > 0 || issues > 0 || selectedIssue > 0) {
     if (link.length == 0 && !!$('[id^="issue_summary_reporter_"]')) {
       addElement()
     }
+
+    popup = $('.ajs-layer.box-shadow.active')
+    assignItemLink = popup.find('.aui-list-item-link.issueaction-assign-issue')
+    reporterItemLink = popup.find('.aui-list-item-link.issueaction-assign-to-reporter')
+    if (popup.length > 0 && assignItemLink.length > 0 && reporterItemLink.length == 0) {
+      contextmenu(assignItemLink)
+    }
   }
 
   mo = new MutationObserver(callback)
