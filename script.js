@@ -7,7 +7,7 @@ if (!!$("[content = 'JIRA']")) {
 }
 
 linkText = "Assign to reporter"
-titleText = "Assign this issue to the reporter"
+titleText = "Assign this issue to the reporter ( Type 'r' )"
 
 function addElement() {
   reporter = $('[id^="issue_summary_reporter_"]').attr('rel')
