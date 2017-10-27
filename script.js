@@ -103,7 +103,6 @@ if (browse > 0 || issues > 0 || selectedIssue > 0) {
     if (popup.length > 0 && assignItemLink.length > 0 && reporterItemLink.length == 0) {
       contextmenu(assignItemLink)
     }
-
   }
 
   mo = new MutationObserver(callback)
