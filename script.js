@@ -31,33 +31,59 @@ function addElement() {
       class: 'issueaction-assign-to-me',
       text: linkText,
       title: titleText,
-      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id + '&assignee=' + reporter
+      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id +
+      '&assignee=' + reporter
     }).appendTo(span)
 
   }
 }
 
-function obtainReporter(issueKey) {
-  restUrl = $(location).attr('href').substring(0, $(location).attr('href').indexOf('browse'))
-  restUrl += 'rest/api/latest/issue/' + issueKey + '?fields=reporter'
-
+function obtainInfo(issueKey, type) {
+  restUrl = $(location).attr('href').substring(0,
+    $(location).attr('href').indexOf('browse'))
+  restUrl += 'rest/api/latest/issue/' + issueKey + '?fields=reporter,assignee'
   var xmlHttp = new XMLHttpRequest()
   xmlHttp.onload = function() {
     response = xmlHttp.responseText
     obj = JSON.parse(response)
-    reporter = obj.fields.reporter.name
-    id = obj.id
+    childReporter = obj.fields.reporter.name
+    childAssignee = obj.fields.assignee.name
   }
   xmlHttp.open( "GET", restUrl, true)
   xmlHttp.send()
-
-  return reporter
+  return [childReporter, childAssignee]
 }
 
-function assignShortcut(){
-  link = $('*[data-mydata="assign-to-reporter"]')
-  if (link.length > 0) {
-    $('*[data-mydata="assign-to-reporter"]').children("a")[0].click()
+function contextmenu(assignItemLink){
+  issueKey = assignItemLink.attr('data-issuekey')
+  issueId = assignItemLink.attr('data-issueid')
+  reporter = obtainInfo(issueKey)[0]
+  assignee = obtainInfo(issueKey)[1]
+  console.log(reporter)
+  console.log(assignee)
+
+  if (reporter != assignee && reporter != currentUser) {
+
+    li = $('<li>', {
+      class: 'aui-list-item'
+    }).insertAfter($('.aui-list-item-link.issueaction-assign-issue').parent())
+
+    link = $('<a>', {
+      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + issueId +
+      '&assignee=' + reporter + '&returnUrl=' + $(location).attr('href') +
+      '&atl_token=' + token,
+      class: 'aui-list-item-link issueaction-assign-to-reporter',
+      text: linkText
+    }).appendTo(li)
+
+
+    li.hover(function() {
+      $(this).prop('class', 'aui-list-item active')
+      $(this).prev().prop('class', 'aui-list-item')
+      $(this).next().prop('class', 'aui-list-item')
+    }, function() {
+      $(this).prop('class', 'aui-list-item')
+    })
   }
 }
 
@@ -67,8 +93,8 @@ if (browse > 0 || issues > 0 || selectedIssue > 0) {
     if(event.which == 114) {
       if($(event.target).prop("tagName") ==  'BODY'){
         assignShortcut()}
-      }
-  })
+    }
+
   var callback = function(mutations){
     link = $('*[data-mydata="assign-to-reporter"]')
     if (link.length == 0 && !!$('[id^="issue_summary_reporter_"]')) {
