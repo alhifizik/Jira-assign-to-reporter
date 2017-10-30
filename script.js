@@ -61,7 +61,6 @@ function assignShortcut(){
   }
 }
 
-
 if (browse > 0 || issues > 0 || selectedIssue > 0) {
   $(document).keypress(function(){
     if(event.which == 114) {
