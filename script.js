@@ -7,7 +7,7 @@ if (!!$("[content = 'JIRA']")) {
 }
 
 linkText = "Assign to reporter"
-titleText = "Assign this issue to the reporter"
+titleText = "Assign this issue to the reporter ( Type 'r' )"
 
 function addElement() {
   reporter = $('[id^="issue_summary_reporter_"]').attr('rel')
@@ -31,13 +31,19 @@ function addElement() {
       class: 'issueaction-assign-to-me',
       text: linkText,
       title: titleText,
-      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id + '&assignee=' + reporter
+      href: "/secure/AssignIssue.jspa?atl_token=" + token + '&id=' + id +
+      '&assignee=' + reporter
     }).appendTo(span)
 
   }
 }
 
 if (browse > 0 || issues > 0 || selectedIssue > 0) {
+  $(document).keypress(function(){
+    if(event.which == 114) {
+      if($(event.target).prop("tagName") ==  'BODY'){
+        assignShortcut()}
+    }
 
   var callback = function(mutations){
     link = $('*[data-mydata="assign-to-reporter"]')
