@@ -37,23 +37,6 @@ function addElement() {
   }
 }
 
-function obtainReporter(issueKey) {
-  restUrl = $(location).attr('href').substring(0, $(location).attr('href').indexOf('browse'))
-  restUrl += 'rest/api/latest/issue/' + issueKey + '?fields=reporter'
-
-  var xmlHttp = new XMLHttpRequest()
-  xmlHttp.onload = function() {
-    response = xmlHttp.responseText
-    obj = JSON.parse(response)
-    reporter = obj.fields.reporter.name
-    id = obj.id
-  }
-  xmlHttp.open( "GET", restUrl, true)
-  xmlHttp.send()
-
-  return reporter
-}
-
 if (browse > 0 || issues > 0 || selectedIssue > 0) {
 
   var callback = function(mutations){
